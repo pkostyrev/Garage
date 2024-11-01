@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4dd7322f1530c5c41b72ec6769549093, type: 3}
+  m_Name: GameSettings
+  m_EditorClassIdentifier: 
+  itemConfigs:
+  - {fileID: 11400000, guid: 1759e65332bb9a6449eeabc8020d8b35, type: 2}
+  - {fileID: 11400000, guid: e3de7173fe47f8349a6cbf4060b59383, type: 2}
+  - {fileID: 11400000, guid: 40d222a29710e6348aa125f45665a36b, type: 2}
+  - {fileID: 11400000, guid: 0cda453f158538040bafa5a8cecf296d, type: 2}
+  - {fileID: 11400000, guid: 2284e3fd53b882c42b381255fccc856e, type: 2}
+  - {fileID: 11400000, guid: 69d124dad3980e54eaa9e8726a5274bc, type: 2}
+  - {fileID: 11400000, guid: 22b81f1146f278040a87be54c011d090, type: 2}
+  - {fileID: 11400000, guid: 6fd13fd88ac767c4284ab3cd9654a17f, type: 2}
+  - {fileID: 11400000, guid: 3ae6e1c950ef4f14d9f58fe54eed0dfa, type: 2}
+  inventories:
+  - type: 0
+    capacity: 9
+  - type: 1
+    capacity: 9
+  interactiveTexts:
+  - type: 1
+    text: Press E
+  - type: 2
+    text: Press F
+  - type: 3
+    text: Press G
+  interactiveButton:
+  - type: 1
+    key: 101
+  - type: 2
+    key: 102
+  - type: 3
+    key: 103
+  - type: 4
+    key: 9
+  - type: 255
+    key: 27
