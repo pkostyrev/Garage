@@ -201,3 +201,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _icon: {fileID: 5973057212102957307}
+  _background: {fileID: 3618560313884498410}
+  _selectColor: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
+  _defaultColor: {r: 0.41960785, g: 0.41960785, b: 0.41960785, a: 1}

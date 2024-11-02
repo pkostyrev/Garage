@@ -6,6 +6,7 @@ public class OpenElement : MonoBehaviour, IInteractiveElement
     private const string IS_CHANGE = "Change";
     private const string DIRECTION = "Direction";
 
+    public string Name => transform.name;
     public InteractiveType InteractiveType => _interactiveType;
 
     [SerializeField] private Animator _animator;

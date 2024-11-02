@@ -348,7 +348,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434688}
-  - component: {fileID: 4666396631525588050}
+  - component: {fileID: 6165119440065141697}
   - component: {fileID: 7800977386683748952}
   m_Layer: 0
   m_Name: Car
@@ -380,7 +380,7 @@ Transform:
   - {fileID: 421148}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4666396631525588050
+--- !u!114 &6165119440065141697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -389,12 +389,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 136596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 834e6931256c5a6449a6cb839e6a8dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 8734ea22b8663e146a2d5983b89c4fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 9561930}
   _interactiveType: 1
   _direction: 0
+  type: 1
 --- !u!65 &7800977386683748952
 BoxCollider:
   m_ObjectHideFlags: 0

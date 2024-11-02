@@ -6,16 +6,10 @@ public class InputManager : MonoBehaviour, IInputManager
 {
     public event Action<InteractiveType> OnInteractive;
 
-    IUIManager _uiManager;
-    IUserController _userController;
-
     Dictionary<KeyCode, InteractiveType> _interatives = new Dictionary<KeyCode, InteractiveType>();
 
-    public void Init(IConfigManager configManager ,IUIManager uiManager, IUserController userController)
+    public void Init(IConfigManager configManager)
     {
-        _uiManager = uiManager;
-        _userController = userController;
-
         foreach (GameSettings.InteractiveButton interactiveButton in configManager.GameSettings.InteractiveButtons)
         {
             _interatives.Add(interactiveButton.key, interactiveButton.type);

@@ -32,6 +32,10 @@ public class Root : MonoBehaviour
 
         var foo4 = Root.InputManager;
 
+        yield return null;
+
+        var foo5 = Root.Scenario;
+
         foo4.OnInteractive += (type) =>
         {
             if (type == InteractiveType.Exit)
@@ -58,6 +62,19 @@ public class Root : MonoBehaviour
 #endif
     }
 
+    private IEventSystemControl eventSystemControl;
+    public static IEventSystemControl EventSystemControl
+    {
+        get
+        {
+            if (instance.eventSystemControl == null)
+            {
+                instance.eventSystemControl = instance.factory.CreateEventSystemControl();
+            }
+            return instance.eventSystemControl;
+        }
+    }
+
     private IConfigManager configManager;
     public static IConfigManager ConfigManager
     {
@@ -71,16 +88,16 @@ public class Root : MonoBehaviour
         }
     }
 
-    private IEventSystemControl eventSystemControl;
-    public static IEventSystemControl EventSystemControl
+    private IUserController userController;
+    public static IUserController UserController
     {
         get
         {
-            if (instance.eventSystemControl == null)
+            if (instance.userController == null)
             {
-                instance.eventSystemControl = instance.factory.CreateEventSystemControl();
+                instance.userController = instance.factory.CreateUserController();
             }
-            return instance.eventSystemControl;
+            return instance.userController;
         }
     }
 
@@ -106,23 +123,9 @@ public class Root : MonoBehaviour
             if (instance.inputManager == null)
             {
                 instance.inputManager = instance.factory.CreateInputManager();
-                instance.inputManager.Init(ConfigManager, UIManager, UserController);
+                instance.inputManager.Init(ConfigManager);
             }
             return instance.inputManager;
-        }
-    }
-
-    private IUserController userController;
-    public static IUserController UserController
-    {
-        get
-        {
-            if (instance.userController == null)
-            {
-                instance.userController = instance.factory.CreateUserController();
-                instance.userController.Init(InputManager);
-            }
-            return instance.userController;
         }
     }
 
@@ -134,9 +137,23 @@ public class Root : MonoBehaviour
             if (instance.uiManager == null)
             {
                 instance.uiManager = instance.factory.CreateUIManager();
-                instance.uiManager.Init(ViewsManager, UserController);
+                instance.uiManager.Init(ViewsManager);
             }
             return instance.uiManager;
+        }
+    }
+
+    private IScenario scenario;
+    public static IScenario Scenario
+    {
+        get
+        {
+            if (instance.scenario == null)
+            {
+                instance.scenario = instance.factory.CreateScenario();
+                instance.scenario.Init(ViewsManager, UserController, InputManager, UIManager);
+            }
+            return instance.scenario;
         }
     }
 }
