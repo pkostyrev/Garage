@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public InventorySlot SelectSlot => _selectSlot;
     public InventoryType Type => _type;
 
     [SerializeField] private GameObject _slotRoot;
@@ -10,7 +12,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] private InventoryType _type;
     [SerializeField] private GameObject _interactiveOff;
 
-    List<InventorySlot> _inventorySlots = new List<InventorySlot>();
+    InventorySlot _selectSlot;
+    LinkedList<InventorySlot> _inventorySlots = new LinkedList<InventorySlot>();
 
     internal void Init(int capacity)
     {
@@ -20,7 +23,7 @@ public class Inventory : MonoBehaviour
         {
             InventorySlot inventorySlot = Instantiate(_inventorySlot, _slotRoot.transform);
             inventorySlot.Init(i);
-            _inventorySlots.Add(inventorySlot);
+            _inventorySlots.AddLast(inventorySlot);
         }
     }
 
@@ -38,16 +41,42 @@ public class Inventory : MonoBehaviour
         return -1;
     }
 
+    public void RemoveItem(int index)
+    {
+        InventorySlot slot = _inventorySlots.ElementAt(index);
+
+        if(slot.HasItem)
+        {
+            slot.Clear();
+        }
+    }
+
     public void Select(bool isSelect)
     {
         _interactiveOff.SetActive(!isSelect);
+
+        if (_selectSlot == null)
+        {
+            _selectSlot = _inventorySlots.First.Value;
+        }
+
+        _selectSlot.Select(isSelect);
     }
 
-    public void SelectItem(int index)
+    public void Next(bool next)
     {
-        for (int i = 0; i < _inventorySlots.Count; i++)
-        {
-            _inventorySlots[index].SetSelect(i == index);
-        }
+        _selectSlot.Select(false);
+
+        LinkedListNode<InventorySlot> node = _inventorySlots.Find(_selectSlot);
+        
+        _selectSlot = next ? 
+            node.Next != null ? 
+                node.Next.Value : 
+                _inventorySlots.First.Value : 
+            node.Previous != null ? 
+                node.Previous.Value : 
+                _inventorySlots.Last.Value;
+
+        _selectSlot.Select(true);
     }
 }

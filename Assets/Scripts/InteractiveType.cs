@@ -5,5 +5,7 @@ public enum InteractiveType : byte
     Pickup = 2,
     Put = 3,
     ChangeInventory = 4,
+    PreviousItem = 5,
+    NextItem = 6,
     Exit = 255
 }

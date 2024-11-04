@@ -19,7 +19,7 @@ public class Scenario : MonoBehaviour, IScenario
 
     Dictionary<string, InventoryType> _inventoryNames = new Dictionary<string, InventoryType>();
     Dictionary<InventoryType, bool> _shownInventories = new Dictionary<InventoryType, bool>();
-    Dictionary<InventoryType, List<string>> _itemsInInventory = new Dictionary<InventoryType, List<string>>();
+    Dictionary<InventoryType, List<string>> _itemsInInventories = new Dictionary<InventoryType, List<string>>();
     Dictionary<string, int> _indexOfItems = new Dictionary<string, int>();
 
     public void Init(IViewsManager viewsManager, IUserController userController, IInputManager inputManager, IUIManager uIManager)
@@ -71,13 +71,16 @@ public class Scenario : MonoBehaviour, IScenario
                         InteractInventory();
                     }
 
-                    _targetInteractiveElement.Interact();
+                    if (_targetInteractiveElement.InteractiveType == type)
+                    {
+                        _targetInteractiveElement.Interact();
+                    }
 
                     break;
 
                 case InteractiveType.Pickup:
 
-                    if (TryPickup())
+                    if (_targetInteractiveElement.InteractiveType == type && TryPickup())
                     {
                         _targetInteractiveElement.Interact();
                     }
@@ -85,11 +88,14 @@ public class Scenario : MonoBehaviour, IScenario
                     break;
 
                 case InteractiveType.Put:
+
+                    TryPutItem();
+
                     break;
 
                 case InteractiveType.ChangeInventory:
 
-                    if (_shownInventories.Count > 0)
+                    if (_shownInventories.Count(i => i.Value) > 1)
                     {
                         ChangeInventory();
                     }
@@ -98,26 +104,75 @@ public class Scenario : MonoBehaviour, IScenario
             }
         }
 
+        if (type is InteractiveType.PreviousItem)
+        {
+            _uIManager.SelectItem(false);
+        }
+
+        if (type is InteractiveType.NextItem)
+        {
+            _uIManager.SelectItem(true);
+        }
+
         if (type is InteractiveType.Exit)
         {
             Root.ExitGame();
         }
     }
 
+    private void TryPutItem()
+    {
+        if (_shownInventories.Count(i => i.Value) > 1)
+        {
+            int selectSlotIndex = _uIManager.GetSelectSlotIndex();
+            List<string> items = new List<string>(_itemsInInventories[_targetShownInventoryType]);
+            foreach (string itemInInventory in items)
+            {
+                if (_indexOfItems[itemInInventory] == selectSlotIndex)
+                {
+                    InventoryType to = _targetShownInventoryType;
+                    InventoryType from = to == MAIN_INVENTORY_TYPE ?
+                        _shownInventories.First(i => i.Key != MAIN_INVENTORY_TYPE && i.Value).Key :
+                        MAIN_INVENTORY_TYPE;
+
+                    Sprite targetItemIcon = _viewsManager.ItemViewManger.GetItemIcon(itemInInventory);
+                    int indexItem = _uIManager.GetInventory(from).TryAddItem(targetItemIcon);
+
+                    if (indexItem < 0)
+                    {
+                        return;
+                    }
+
+                    _itemsInInventories[from].Add(itemInInventory);
+                    _indexOfItems[itemInInventory] = indexItem;
+
+                    _itemsInInventories[to].Remove(itemInInventory);
+                    _uIManager.GetInventory(to).RemoveItem(selectSlotIndex);
+                }
+            }
+        }
+    }
+
     private bool TryPickup()
     {
-        string itemKey = _targetInteractiveElement.Name;
-        Sprite targetItemIcon = _viewsManager.ItemViewManger.GetItemIcon(_targetInteractiveElement.Name);
-        int indexItem = _uIManager.GetInventory(MAIN_INVENTORY_TYPE).TryAddItem(targetItemIcon);
+        string interactiveKey = _targetInteractiveElement.Name;
 
-        if (indexItem < 0)
+        if (_viewsManager.ItemViewManger.IsItem(interactiveKey))
         {
-            return false;
+            Sprite targetItemIcon = _viewsManager.ItemViewManger.GetItemIcon(_targetInteractiveElement.Name);
+            int indexItem = _uIManager.GetInventory(MAIN_INVENTORY_TYPE).TryAddItem(targetItemIcon);
+
+            if (indexItem < 0)
+            {
+                return false;
+            }
+
+            _itemsInInventories[MAIN_INVENTORY_TYPE].Add(interactiveKey);
+            _indexOfItems.Add(interactiveKey, indexItem);
+            return true;
         }
 
-        _itemsInInventory[MAIN_INVENTORY_TYPE].Add(itemKey);
-        _indexOfItems.Add(itemKey, indexItem);
-        return true;
+        return false;
     }
 
     private void InteractInventory()
@@ -178,16 +233,13 @@ public class Scenario : MonoBehaviour, IScenario
     {
         foreach (InventoryType type in Enum.GetValues(typeof(InventoryType)))
         {
-            if (type == MAIN_INVENTORY_TYPE)
-            {
-                _targetShownInventoryType = MAIN_INVENTORY_TYPE;
-                _shownInventories.Add(type, true);
-            }
-
             _inventoryNames.Add(type.ToString(), type);
-            _itemsInInventory.Add(type, new List<string>());
+            _itemsInInventories.Add(type, new List<string>());
             _uIManager.InitInventory(type, _viewsManager.GetInventoryCapacity(type));
         }
+
+        _targetShownInventoryType = MAIN_INVENTORY_TYPE;
+        _shownInventories.Add(MAIN_INVENTORY_TYPE, true);
     }
 
     private void OpenInventory(InventoryType type)
@@ -197,7 +249,7 @@ public class Scenario : MonoBehaviour, IScenario
             _shownInventories.Add(type, true);
             _targetShownInventoryType = type;
             _uIManager.ShowSelectInventory(type);
-            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 0);
+            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 1);
         }
         else
         {
@@ -207,11 +259,11 @@ public class Scenario : MonoBehaviour, IScenario
 
     private void ShowInventory(InventoryType type)
     {
-        if (!_shownInventories.ContainsKey(type))
+        if (_shownInventories.ContainsKey(type) && !_shownInventories[type])
         {
             _shownInventories[type] = true;
             _uIManager.ShowInventory(type);
-            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 0);
+            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 1);
         }
     }
 
@@ -230,11 +282,11 @@ public class Scenario : MonoBehaviour, IScenario
 
     private void HideInventory(InventoryType type)
     {
-        if (_shownInventories.ContainsKey(type))
+        if (_shownInventories.ContainsKey(type) && _shownInventories[type])
         {
             _shownInventories[type] = false;
             _uIManager.HideInventory(type);
-            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 0);
+            _uIManager.ChangeVisibilityInventoryHelpInfo(_shownInventories.Values.Count(v => v) > 1);
             _targetShownInventoryType = MAIN_INVENTORY_TYPE;
         }
         else

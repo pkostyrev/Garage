@@ -27,4 +27,9 @@ public class ItemViewManager : MonoBehaviour, IItemViewManger
         Debug.LogError($"Missing sprite for item, name: {itemName}");
         return null;
     }
+
+    public bool IsItem(string key)
+    {
+       return _itemsConfig.ContainsKey(key);
+    }
 }

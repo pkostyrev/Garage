@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,12 +30,12 @@ public class InventorySlot : MonoBehaviour
         _icon.enabled = true;
     }
 
-    private void Clear()
+    public void Clear()
     {
         _icon.enabled = false;
     }
 
-    internal void SetSelect(bool isSelect)
+    internal void Select(bool isSelect)
     {
         _background.color = isSelect ? _selectColor : _defaultColor;
     }

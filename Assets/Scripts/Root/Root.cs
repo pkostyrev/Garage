@@ -95,6 +95,20 @@ public class Root : MonoBehaviour
         }
     }
 
+    private IUIManager uiManager;
+    public static IUIManager UIManager
+    {
+        get
+        {
+            if (instance.uiManager == null)
+            {
+                instance.uiManager = instance.factory.CreateUIManager();
+                instance.uiManager.Init();
+            }
+            return instance.uiManager;
+        }
+    }
+
     private IViewsManager viewsManager;
     public static IViewsManager ViewsManager
     {
@@ -120,20 +134,6 @@ public class Root : MonoBehaviour
                 instance.inputManager.Init(ConfigManager);
             }
             return instance.inputManager;
-        }
-    }
-
-    private IUIManager uiManager;
-    public static IUIManager UIManager
-    {
-        get
-        {
-            if (instance.uiManager == null)
-            {
-                instance.uiManager = instance.factory.CreateUIManager();
-                instance.uiManager.Init(ViewsManager);
-            }
-            return instance.uiManager;
         }
     }
 

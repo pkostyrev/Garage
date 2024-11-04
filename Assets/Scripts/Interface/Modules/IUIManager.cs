@@ -2,7 +2,7 @@ using System.Globalization;
 
 public interface IUIManager
 {
-    void Init(IViewsManager viewsManager);
+    void Init();
 
     void ShowInfo(string text);
     void HideInfo();
@@ -16,4 +16,6 @@ public interface IUIManager
     void SwitchToInventory(InventoryType type);
     void ChangeVisibilityInventoryHelpInfo(bool visibel);
 
+    int GetSelectSlotIndex();
+    void SelectItem(bool next);
 }

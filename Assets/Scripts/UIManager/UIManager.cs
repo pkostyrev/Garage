@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour, IUIManager
 {
-
     [SerializeField] private TextMeshProUGUI textInfo;
     [SerializeField] private GameObject textInfoRoot;
     [SerializeField] private GameObject inventoryHelpInfo;
@@ -14,7 +13,7 @@ public class UIManager : MonoBehaviour, IUIManager
 
     InventoryType _targetInventoryTipe;
 
-    public void Init(IViewsManager viewsManager)
+    public void Init()
     {
         foreach (Inventory inventory in inventories)
         {
@@ -22,7 +21,6 @@ public class UIManager : MonoBehaviour, IUIManager
         }
 
         _targetInventoryTipe = InventoryType.Main;
-        SelectIventory(InventoryType.Main);
     }
 
     public void ShowInfo(string text)
@@ -41,7 +39,15 @@ public class UIManager : MonoBehaviour, IUIManager
         return _inventories[type];
     }
 
-    public void InitInventory(InventoryType type, int capacity) => _inventories[type].Init(capacity);
+    public void InitInventory(InventoryType type, int capacity)
+    {
+        _inventories[type].Init(capacity);
+
+        if(type == _targetInventoryTipe)
+        {
+            SelectIventory(type);
+        }
+    }
 
     public void ShowInventory(InventoryType type) => _inventories[type].gameObject.SetActive(true);
 
@@ -62,6 +68,16 @@ public class UIManager : MonoBehaviour, IUIManager
     public void ChangeVisibilityInventoryHelpInfo(bool visibel)
     {
         inventoryHelpInfo.SetActive(visibel);
+    }
+
+    public void SelectItem(bool next)
+    {
+        _inventories[_targetInventoryTipe].Next(next);
+    }
+
+    public int GetSelectSlotIndex()
+    {
+        return _inventories[_targetInventoryTipe].SelectSlot.Index;
     }
 
     private void SelectIventory(InventoryType type)

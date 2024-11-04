@@ -20,10 +20,22 @@ public class InputManager : MonoBehaviour, IInputManager
     {
         foreach ((KeyCode key, InteractiveType type) in _interatives)
         {
-            if(Input.GetKeyDown(key))
+            if (Input.GetKeyDown(key))
             {
                 OnInteractive?.Invoke(type);
             }
+        }
+
+        float mw = Input.GetAxis("Mouse ScrollWheel");
+
+        if (mw > 0.1)
+        {
+            OnInteractive?.Invoke(InteractiveType.PreviousItem);
+        }
+
+        if (mw < -0.1)
+        {
+            OnInteractive?.Invoke(InteractiveType.NextItem);
         }
     }
 }
