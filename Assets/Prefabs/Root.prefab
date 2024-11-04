@@ -51,6 +51,7 @@ MonoBehaviour:
   _inputManager: {fileID: 6351463061310555901, guid: 699546f49c5f92d41b71793a8b9963a2, type: 3}
   _userController: {fileID: 4516469193977847223, guid: 830d4f19ce28bcd4dbbdf7fb4f488c5c, type: 3}
   _UIManager: {fileID: 611021687047902345, guid: 1922eb5a55e2f5d4a945172afa332ab1, type: 3}
+  _scenario: {fileID: 5657660681745875260, guid: a59e909e25a5643408935a78b38e6f82, type: 3}
 --- !u!1 &9113913712010716087
 GameObject:
   m_ObjectHideFlags: 0

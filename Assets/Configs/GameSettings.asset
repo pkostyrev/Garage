@@ -23,9 +23,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6fd13fd88ac767c4284ab3cd9654a17f, type: 2}
   - {fileID: 11400000, guid: 3ae6e1c950ef4f14d9f58fe54eed0dfa, type: 2}
   inventories:
-  - type: 0
-    capacity: 9
   - type: 1
+    capacity: 9
+  - type: 2
     capacity: 9
   interactiveTexts:
   - type: 1

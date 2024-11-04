@@ -35,12 +35,6 @@ public class Root : MonoBehaviour
         yield return null;
 
         var foo5 = Root.Scenario;
-
-        foo4.OnInteractive += (type) =>
-        {
-            if (type == InteractiveType.Exit)
-                ExitGame();
-        };
     }
 
     internal static void Die()

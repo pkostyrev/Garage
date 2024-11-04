@@ -4,17 +4,16 @@ public interface IUIManager
 {
     void Init(IViewsManager viewsManager);
 
-    void ChangeInventory();
-
-    void ShowInfo(InteractiveType type);
+    void ShowInfo(string text);
     void HideInfo();
 
-    bool IsOpenedInventory(InventoryType inventoryType);
-    void OpenInventory(InventoryType inventoryType);
-    void CloseInventory(InventoryType inventoryType);
-    void ChangeOpennessInventory(InventoryType inventoryType);
-    void ShowInventory(InventoryType inventoryType);
-    void HideInventory(InventoryType inventoryType);
-    void HideOtherInventory();
+    Inventory GetInventory(InventoryType type);
+
+    void InitInventory(InventoryType type, int capacity);
+    void ShowInventory(InventoryType type);
+    void ShowSelectInventory(InventoryType type);
+    void HideInventory(InventoryType type);
+    void SwitchToInventory(InventoryType type);
+    void ChangeVisibilityInventoryHelpInfo(bool visibel);
 
 }

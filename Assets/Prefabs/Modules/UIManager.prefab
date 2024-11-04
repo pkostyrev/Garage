@@ -195,7 +195,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textInfo: {fileID: 5491874294827013377}
   textInfoRoot: {fileID: 8019436121658457574}
-  swappedInventoryInfo: {fileID: 8756925188697746344}
+  inventoryHelpInfo: {fileID: 8756925188697746344}
   inventories:
   - {fileID: 8939440893933464818}
   - {fileID: 2007705326999540177}
@@ -536,7 +536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotRoot: {fileID: 8487090851248217803}
   _inventorySlot: {fileID: 3456343163923088361, guid: 47344112deccc6a4eba163121f7287c7, type: 3}
-  _type: 1
+  _type: 2
   _interactiveOff: {fileID: 5905057156714991128}
 --- !u!1 &2976363591021259089
 GameObject:
@@ -975,7 +975,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _slotRoot: {fileID: 2976363591021259089}
   _inventorySlot: {fileID: 3456343163923088361, guid: 47344112deccc6a4eba163121f7287c7, type: 3}
-  _type: 0
+  _type: 1
   _interactiveOff: {fileID: 1392151577449419480}
 --- !u!1 &8601739448982053893
 GameObject:
@@ -1121,7 +1121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7514314506262519406}
   m_Layer: 5
-  m_Name: SwappedInventoryInfo
+  m_Name: InventoryHeloInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,46 +1,33 @@
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour, IUIManager
 {
-    public Inventory TargetInventory => _targetInventory;
 
     [SerializeField] private TextMeshProUGUI textInfo;
     [SerializeField] private GameObject textInfoRoot;
-    [SerializeField] private GameObject swappedInventoryInfo;
+    [SerializeField] private GameObject inventoryHelpInfo;
     [SerializeField] private Inventory[] inventories;
 
-    IViewsManager _viewsManager;
+    Dictionary<InventoryType, Inventory> _inventories = new Dictionary<InventoryType, Inventory>();
 
-    LinkedList<Inventory> _openedInventories = new LinkedList<Inventory>();
-    Inventory _mainIventories;
-    Inventory _targetInventory;
-    int _shownInventoryesCount = 1;
+    InventoryType _targetInventoryTipe;
 
     public void Init(IViewsManager viewsManager)
     {
-        _viewsManager = viewsManager;
-
         foreach (Inventory inventory in inventories)
         {
-            if (inventory.Type == InventoryType.Main)
-            {
-                _mainIventories = inventory;
-                _openedInventories.AddLast(inventory);
-                SelectIventory(inventory);
-            }
-
-            inventory.Init(_viewsManager.GetInventoryCapacity(inventory.Type));
+            _inventories.Add(inventory.Type, inventory);
         }
 
-        Refresh();
+        _targetInventoryTipe = InventoryType.Main;
+        SelectIventory(InventoryType.Main);
     }
 
-    public void ShowInfo(InteractiveType type)
+    public void ShowInfo(string text)
     {
-        textInfo.text = _viewsManager.GetInteractiveText(type);
+        textInfo.text = text;
         textInfoRoot.SetActive(true);
     }
 
@@ -49,142 +36,38 @@ public class UIManager : MonoBehaviour, IUIManager
         textInfoRoot.SetActive(false);
     }
 
-    public bool IsOpenedInventory(InventoryType inventoryType)
+    public Inventory GetInventory(InventoryType type)
     {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
-        return _openedInventories.Contains(inventory);
+        return _inventories[type];
     }
 
-    public void OpenInventory(InventoryType inventoryType)
-    {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
+    public void InitInventory(InventoryType type, int capacity) => _inventories[type].Init(capacity);
 
-        if (!_openedInventories.Contains(inventory))
-        {
-            _shownInventoryesCount++;
-            _openedInventories.AddLast(inventory);
-            SelectIventory(inventory);
-            Refresh();
-            inventory.gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError($"Attempt to open opened inventory. Inventory name: {inventoryType}");
-        }
+    public void ShowInventory(InventoryType type) => _inventories[type].gameObject.SetActive(true);
+
+    public void ShowSelectInventory(InventoryType type)
+    {
+        SelectIventory(type);
+        ShowInventory(type);
     }
 
-    public void CloseInventory(InventoryType inventoryType)
+    public void HideInventory(InventoryType type)
     {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
-
-        if (_openedInventories.Contains(inventory))
-        {
-            _shownInventoryesCount--;
-            inventory.gameObject.SetActive(false);
-            _openedInventories.Remove(inventory);
-            SelectIventory(_mainIventories);
-            Refresh();
-        }
-        else
-        {
-            Debug.LogError($"Attempt to close closed inventory. Inventory name: {inventoryType}");
-        }
+        _inventories[type].gameObject.SetActive(false);
+        SelectIventory(InventoryType.Main);
     }
 
-    public void ChangeOpennessInventory(InventoryType inventoryType)
+    public void SwitchToInventory(InventoryType type) => SelectIventory(type);
+
+    public void ChangeVisibilityInventoryHelpInfo(bool visibel)
     {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
-
-        if (_openedInventories.Contains(inventory))
-        {
-            _shownInventoryesCount--;
-            inventory.gameObject.SetActive(false);
-            _openedInventories.Remove(inventory);
-            inventory = inventories.Single(i => i.Type == InventoryType.Main);
-        }
-        else
-        {
-            _shownInventoryesCount++;
-            _openedInventories.AddLast(inventory);
-            inventory.gameObject.SetActive(true);
-        }
-
-        SelectIventory(inventory);
-        Refresh();
+        inventoryHelpInfo.SetActive(visibel);
     }
 
-    public void ShowInventory(InventoryType inventoryType)
+    private void SelectIventory(InventoryType type)
     {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
-
-        if (_openedInventories.Contains(inventory))
-        {
-            _shownInventoryesCount++;
-            Refresh();
-            inventory.gameObject.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError($"Atempt to show shown inventory. Inventory name: {inventoryType}");
-        }
-    }
-
-    public void HideInventory(InventoryType inventoryType)
-    {
-        Inventory inventory = inventories.Single(i => i.Type == inventoryType);
-
-        if (_openedInventories.Contains(inventory))
-        {
-            _shownInventoryesCount--;
-            inventory.gameObject.SetActive(false);
-            SelectIventory(_mainIventories);
-            Refresh();
-        }
-        else
-        {
-            Debug.LogError($"Attempt to close closed inventory. Inventory name: {inventoryType}");
-        }
-    }
-
-    public void HideOtherInventory()
-    {
-        foreach (Inventory inventory in _openedInventories)
-        {
-            if (inventory != _mainIventories)
-            {
-                inventory.gameObject.SetActive(false);
-            }
-        }
-
-        _shownInventoryesCount = 1;
-        SelectIventory(_mainIventories);
-        Refresh();
-    }
-
-    public void ChangeInventory()
-    {
-        if (_openedInventories.Last.Value == _targetInventory)
-        {
-            SelectIventory(_openedInventories.First.Value);
-        }
-        else
-        {
-            SelectIventory(_openedInventories.Find(_targetInventory).Next.Value);
-        }
-    }
-
-    private void SelectIventory(Inventory selectInventory)
-    {
-        _targetInventory = selectInventory;
-
-        foreach (Inventory inventory in _openedInventories)
-        {
-            inventory.Select(inventory == selectInventory);
-        }
-    }
-
-    private void Refresh()
-    {
-        swappedInventoryInfo.SetActive(_shownInventoryesCount > 1);
+        _inventories[_targetInventoryTipe].Select(false);
+        _targetInventoryTipe = type;
+        _inventories[_targetInventoryTipe].Select(true);
     }
 }

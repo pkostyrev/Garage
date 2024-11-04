@@ -1,5 +1,5 @@
 public enum InventoryType
 {
-    Main,
-    Car
+    Main = 1,
+    Car = 2
 }

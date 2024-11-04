@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class InventorySlot : MonoBehaviour
 {
+    public int Index => _index;
     public bool HasItem => _icon.enabled;
 
     [SerializeField] private Image _icon;
@@ -11,14 +12,22 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private Color _selectColor;
     [SerializeField] private Color _defaultColor;
 
+    private int _index;
+
     private void Awake()
     {
         _icon.enabled = false;
     }
 
-    public void SetItem(string itemKey)
+    public void Init(int index)
     {
-        _icon.sprite = Root.ViewsManager.ItemViewManger.GetItemIcon(itemKey);
+        _index = index;
+        _icon.enabled = false;
+    }
+
+    public void SetItem(Sprite icon)
+    {
+        _icon.sprite = icon;
         _icon.enabled = true;
     }
 

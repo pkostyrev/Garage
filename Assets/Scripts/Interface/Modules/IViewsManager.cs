@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public interface IViewsManager
 {
     void Init(IConfigManager configManager);

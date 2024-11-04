@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,23 +19,23 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < capacity; i++)
         {
             InventorySlot inventorySlot = Instantiate(_inventorySlot, _slotRoot.transform);
-
+            inventorySlot.Init(i);
             _inventorySlots.Add(inventorySlot);
         }
     }
 
-    public bool TryAddItem(string itemKey)
+    public int TryAddItem(Sprite icon)
     {
         foreach (InventorySlot inventorySlot in _inventorySlots)
         {
             if (!inventorySlot.HasItem)
             {
-                inventorySlot.SetItem(itemKey);
-                return true;
+                inventorySlot.SetItem(icon);
+                return inventorySlot.Index;
             }
         }
 
-        return false;
+        return -1;
     }
 
     public void Select(bool isSelect)
